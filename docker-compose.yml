@@ -75,7 +75,15 @@ services:
     depends_on: [keycloak]
     networks: [iamnet]
     restart: unless-stopped
-
+  linux-client:
+    build: ./linux-client
+    hostname: client1
+    dns:
+     - ${DC_IP}
+    depends_on:
+      samba-ad:
+        condition: service_healthy
+    networks: [iamnet]
 networks:
   iamnet:
     ipam:
