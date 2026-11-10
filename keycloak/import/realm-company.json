@@ -2083,7 +2083,7 @@
             "DC=company,DC=local"
           ],
           "cachePolicy": [
-            "DEFAULT"
+            "NO_CACHE"
           ],
           "useKerberosForPasswordAuthentication": [
             "false"
