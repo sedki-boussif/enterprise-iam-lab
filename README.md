@@ -8,7 +8,17 @@ A reproducible, Docker-based identity and access management lab for a fictional 
 
 Disable a user or change a group in AD once, and every path reacts.
 
-![Architecture diagram](docs/architecture.png)
+```mermaid
+flowchart LR
+  Browser -->|HTTP| Webapp["Web app (Flask)"]
+  Browser -->|login redirect| KC[Keycloak]
+  Webapp -->|OIDC| KC
+  KC --- PG[("Postgres")]
+  KC -->|LDAP bind| AD["Samba AD DC<br/>dc1.company.local<br/>LDAP, Kerberos, DNS"]
+  RT["radtest (linux-client)"] -->|RADIUS UDP 1812| FR[FreeRADIUS]
+  FR -->|LDAP bind| AD
+  LC["Linux client (client1)"] -->|Kerberos 88, LDAP via GSSAPI| AD
+```
 
 ## Scope note (please read)
 
@@ -95,10 +105,10 @@ Web tests need a browser and are run by hand:
 | ID | Scenario | Expected | Result |
 |---|---|---|---|
 | T1 | alice logs in, opens `/hr` | Allowed | Pass (see `docs/screenshots/`) |
-| T2 | bob logs in, opens `/hr` | 403 Forbidden | TODO: confirm and add screenshot |
-| T3 | admin1 opens `/admin` | Allowed | TODO: confirm and add screenshot |
-| T4 | eve (disabled) logs in | Refused | TODO: confirm and add screenshot |
-| T9 | Remove alice from GG-HR, log in again | `/hr` returns 403 | TODO: confirm and add screenshot |
+| T2 | bob logs in, opens `/hr` | 403 Forbidden | Pass |
+| T3 | admin1 opens `/admin` | Allowed | Pass |
+| T4 | eve (disabled) logs in | Refused | Pass |
+| T9 | Remove alice from GG-HR, log in again | `/hr` returns 403 | Pass |
 | T10 (web) | Disable carol in AD, log in | Refused with "Account is disabled, contact your administrator." | Pass |
 | T11 / T12 | `make reset` then `make up` | Same working state, no manual steps | Pass on the build machine. TODO: repeat on a second machine |
 
@@ -142,7 +152,7 @@ linux-client/   Dockerfile, krb5.conf
 freeradius/     clients.conf, mods-enabled/ldap, sites-enabled/default
 tests/          smoke-test.sh
 security/       attacks/, detections/, hardening/
-docs/           architecture.png, screenshots/
+docs/           screenshots/
 ```
 
 ## Secrets
