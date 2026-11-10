@@ -31,3 +31,13 @@ samba-tool user disable eve
 for u in Administrator alice bob carol admin1 eve svc-keycloak svc-radius; do
   samba-tool user setexpiry "$u" --noexpiry
 done
+
+# Lab only: deliberately vulnerable test account for the AS-REP roasting demo
+samba-tool user create asrep-target "$SEED_USER_PASSWORD" --given-name=ASREP --surname=Target --userou="OU=Development" --use-username-as-cn
+samba-tool user setexpiry asrep-target --noexpiry
+ldapmodify -x -H ldap://127.0.0.1 -D "administrator@${DOMAIN}" -w "$ADMIN_PASSWORD" <<LDIF
+dn: CN=asrep-target,OU=Development,DC=${DOMAIN//./,DC=}
+changetype: modify
+replace: userAccountControl
+userAccountControl: 4194816
+LDIF
