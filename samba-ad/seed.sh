@@ -41,3 +41,8 @@ changetype: modify
 replace: userAccountControl
 userAccountControl: 4194816
 LDIF
+
+# Lab only: deliberately weak service account with an SPN for the Kerberoasting demo
+samba-tool user create svc-weak 'Dragon123' --given-name=Service --surname=Weak --userou="OU=ServiceAccounts" --use-username-as-cn
+samba-tool user setexpiry svc-weak --noexpiry
+samba-tool spn add HTTP/fileserver.company.local svc-weak
