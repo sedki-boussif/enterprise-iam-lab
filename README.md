@@ -21,7 +21,7 @@ Disable a user or change a group in AD once, and every path reacts.
 Requirements: Docker with Compose v2, Git, about 6 GB of RAM for Docker, and free ports 8080 and 5000.
 
 ```bash
-git clone <your-repo-url> enterprise-iam-lab
+git clone https://github.com/sedki-boussif/enterprise-iam-lab.git enterprise-iam-lab
 cd enterprise-iam-lab
 cp .env.example .env      # then change every ChangeMe-... value
 make up
