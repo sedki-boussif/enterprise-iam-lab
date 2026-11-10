@@ -1,0 +1,23 @@
+ldap {
+    server = 'dc1.company.local'
+    port = 389
+    identity = 'CN=svc-radius,OU=ServiceAccounts,DC=company,DC=local'
+    password = $ENV{SVC_RADIUS_PASSWORD}
+    base_dn = 'DC=company,DC=local'
+
+    options {
+        chase_referrals = yes
+        rebind = yes
+    }
+
+    user {
+        base_dn = "${..base_dn}"
+        filter = "(sAMAccountName=%{%{Stripped-User-Name}:-%{User-Name}})"
+    }
+
+    group {
+        base_dn = "${..base_dn}"
+        name_attribute = cn
+        membership_attribute = 'memberOf'
+    }
+}
