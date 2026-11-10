@@ -481,6 +481,14 @@ authorize {
 		}
 	}
 
+    if (LDAP-Group == 'GG-HR') {
+        update reply {
+            Tunnel-Type := VLAN
+            Tunnel-Medium-Type := IEEE-802
+            Tunnel-Private-Group-Id := '20'
+        }
+    }
+
 	#
 	#  Enforce daily limits on time spent logged in.
 #	daily
